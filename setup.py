@@ -7,7 +7,7 @@ with open('README.md') as f:
 
 setup(
     name='python-liftbridge',
-    version='0.0.2',
+    version='0.0.3',
     description='Python client for Liftbridge.',
     long_description=long_description,
     long_description_content_type='text/markdown',
