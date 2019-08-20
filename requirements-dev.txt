@@ -1,0 +1,4 @@
+tox>=3.8
+pre-commit
+grpcio
+grpcio-tools
