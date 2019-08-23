@@ -14,6 +14,10 @@ class ErrStreamExists(Exception):
         message = message or 'Given stream already exists'
         super().__init__(message)
 
+class ErrChannelClosed(Exception):
+    def __init__(self, message=None):
+        message = message or 'Given channel has been closed'
+        super().__init__(message)
 
 def handle_rpc_errors(fnc):
     """Decorator to add more context to RPC errors"""
@@ -28,6 +32,8 @@ def handle_rpc_errors(fnc):
                 raise ErrNoSuchStream from None
             elif e.code() == grpc.StatusCode.ALREADY_EXISTS:
                 raise ErrStreamExists from None
+            elif e.code() == grpc.StatusCode.CANCELLED:
+                raise ErrChannelClosed from None
             else:
                 print('Failed with {1}: {2}'.format(e.code(), e.details()))
     return wrapper
@@ -46,6 +52,8 @@ def handle_rpc_errors_in_generator(fnc):
                 raise ErrNoSuchStream from None
             elif e.code() == grpc.StatusCode.ALREADY_EXISTS:
                 raise ErrStreamExists from None
+            elif e.code() == grpc.StatusCode.CANCELLED:
+                raise ErrChannelClosed from None
             else:
                 print('Failed with {1}: {2}'.format(e.code(), e.details()))
     return wrapper

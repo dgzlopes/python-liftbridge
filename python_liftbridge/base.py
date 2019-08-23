@@ -22,19 +22,19 @@ class BaseClient(object):
         if tls_cert:
             self.stub = self._secure_connect(tls_cert)
         else:
+            self.channel = grpc.insecure_channel(self.ip_address)
             self.stub = self._insecure_connect()
 
     def _insecure_connect(self):
-        channel = grpc.insecure_channel(self.ip_address)
         try:
-            grpc.channel_ready_future(channel).result(timeout=self.timeout)
+            grpc.channel_ready_future(self.channel).result(timeout=self.timeout)
         except grpc.FutureTimeoutError:
             sys.exit('Error connecting to server')
         else:
-            return python_liftbridge.api_pb2_grpc.APIStub(channel)
+            return python_liftbridge.api_pb2_grpc.APIStub(self.channel)
 
     def _secure_connect(self, secure_file):
         pass
 
     def close(self):
-        pass
+        self.channel.close()
