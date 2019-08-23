@@ -23,8 +23,14 @@ publish:
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*
 	rm -fr build dist .egg python_liftbridge.egg-info
+
 .PHONY: super-clean
-super-clean: clean
+super-clean:
 	rm -rf .tox
 	rm -rf venv
 	pyenv local --unset
+
+.PHONY: run-liftbridge
+run-liftbridge:
+	docker pull dgzlopes/liftbridge-docker
+	docker run -d --name=liftbridge-main -p 4222:4222 -p 9292:9292 -p 8222:8222 -p 6222:6222 dgzlopes/liftbridge-docker

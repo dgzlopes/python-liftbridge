@@ -129,4 +129,5 @@ Some things on the backlog:
 - [ ] Add gRPC connection pool
 - [ ] Add logging
 - [ ] Improve fetch metadata
+- [x] Add to the makefile run-liftbridge using Docker [container](https://github.com/dgzlopes/liftbridge-docker)
 - [ ] Better instrumentation/observability (OpenCensus support?)
