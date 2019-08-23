@@ -118,7 +118,7 @@ Since Liftbridge is an extension of [NATS](https://github.com/nats-io/gnatsd), a
 Some things on the backlog:
 
 - [ ] Add documentation (Sphynx)
-- [ ] Add CI (CircleCI)
+- [ ] Add CI (CircleCI or TravisCI)
 - [ ] Add tests
 - [ ] Add code coverage
 - [ ] Add TLS support for gRPC
@@ -127,7 +127,11 @@ Some things on the backlog:
 - [x] Add method to close connection
 - [ ] Add async client
 - [ ] Add gRPC connection pool
-- [ ] Add logging
+- [ ] Add logging (and remove all the random prints)
+- [ ] Add proper docstrings
+- [ ] Add version file
+- [ ] Add Contributing.md and explanation of the workflow (pyenv,tox,make,pre-commit...)
 - [ ] Improve fetch metadata
+- [ ] Improve error handling
 - [x] Add to the makefile run-liftbridge using Docker [container](https://github.com/dgzlopes/liftbridge-docker)
 - [ ] Better instrumentation/observability (OpenCensus support?)
