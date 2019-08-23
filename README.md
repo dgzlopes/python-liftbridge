@@ -124,8 +124,9 @@ Some things on the backlog:
 - [ ] Add TLS support for gRPC
 - [ ] Add message headers support
 - [ ] Add message ACK support (scaffolding is already done)
-- [ ] Add method to close connection
+- [x] Add method to close connection
 - [ ] Add async client
 - [ ] Add gRPC connection pool
+- [ ] Add logging
 - [ ] Improve fetch metadata
 - [ ] Better instrumentation/observability (OpenCensus support?)
