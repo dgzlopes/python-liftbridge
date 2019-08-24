@@ -2,6 +2,8 @@
 [![PyPI](https://img.shields.io/pypi/v/python-liftbridge.svg)](https://pypi.org/project/python-liftbridge/)
 [![GitHub](https://img.shields.io/github/license/dgzlopes/python-liftbridge)](https://github.com/dgzlopes/python-liftbridge/blob/master/LICENSE.md)
 
+**This project is under development.**
+
 Python client for [Liftbridge](https://github.com/liftbridge-io/liftbridge), a system that provides lightweight, fault-tolerant message streams for [NATS](https://nats.io).
 
 Liftbridge provides the following high-level features:
