@@ -1,3 +1,6 @@
+from logging import getLogger
+from logging import NullHandler
+
 import python_liftbridge.api_pb2
 
 
@@ -16,6 +19,8 @@ class Message():
             offset=None,
             timestamp=None,
     ):
+        self.logger = getLogger(__name__)
+        self.logger.addHandler(NullHandler())
         self.key = key
         self.value = value
         self.subject = subject
@@ -27,16 +32,19 @@ class Message():
 
     def ack_policy_all(self):
         """Sets the ack policy to wait for all stream replicas to get the message."""
+        self.logger.debug('Sets ack policy to wait for all')
         self.ack_policy = python_liftbridge.api_pb2.AckPolicy.Value('ALL')
         return self
 
     def ack_policy_leader(self):
         """Sets the ack policy to wait for just the stream leader to get the message."""
+        self.logger.debug('Sets ack policy to wait the leader')
         self.ack_policy = python_liftbridge.api_pb2.AckPolicy.Value('LEADER')
         return self
 
     def ack_policy_none(self):
         """Don't send an ack."""
+        self.logger.debug('Sets ack policy to no ack')
         self.ack_policy = python_liftbridge.api_pb2.AckPolicy.Value('NONE')
         return self
 
@@ -55,3 +63,6 @@ class Message():
 
     def _create_message(self):
         return python_liftbridge.api_pb2.Message()
+
+    def __repr__(self):
+        return str(self.__dict__)

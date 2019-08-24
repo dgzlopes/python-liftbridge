@@ -37,11 +37,11 @@ run-liftbridge:
 
 .PHONY: pub
 pub:
-	python examples/lift-pub.py $(RUN_ARGS)
+	python examples/lift-pub.py $(RUN_ARGS) -d
 
 .PHONY: sub
 sub:
-	python examples/lift-sub.py $(RUN_ARGS)
+	python examples/lift-sub.py $(RUN_ARGS) -c -d
 
 # If the first argument is "pub"...
 ifeq (pub,$(firstword $(MAKECMDGOALS)))

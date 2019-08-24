@@ -14,10 +14,12 @@ class ErrStreamExists(Exception):
         message = message or 'Given stream already exists'
         super().__init__(message)
 
+
 class ErrChannelClosed(Exception):
     def __init__(self, message=None):
         message = message or 'Given channel has been closed'
         super().__init__(message)
+
 
 def handle_rpc_errors(fnc):
     """Decorator to add more context to RPC errors"""

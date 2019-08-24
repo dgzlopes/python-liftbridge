@@ -1,10 +1,11 @@
 import argparse
+import logging
 from datetime import datetime
 
+from python_liftbridge import ErrNoSuchStream
+from python_liftbridge import ErrStreamExists
 from python_liftbridge import Lift
 from python_liftbridge import Stream
-from python_liftbridge import ErrStreamExists
-from python_liftbridge import ErrNoSuchStream
 
 
 def parse_arguments():
@@ -40,6 +41,12 @@ def parse_arguments():
         action='store_true',
         help="Creates the stream in case it doesn't exist",
     )
+    parser.add_argument(
+        '-d',
+        '--debug',
+        action='store_true',
+        help='Shows debug logs',
+    )
 
     return parser.parse_args()
 
@@ -47,13 +54,16 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
     client = Lift(ip_address=args.server)
 
     count = 0
 
     if args.create:
         try:
-            client.create_stream(Stream(args.subject,args.stream))
+            client.create_stream(Stream(args.subject, args.stream))
         except ErrStreamExists:
             pass
 
@@ -72,7 +82,8 @@ def main():
             ))
             count = count + 1
     except ErrNoSuchStream:
-        print("The stream {} doesn't exist. Using -c or --create you can force it's creation.".format(args.stream))
+        print("The stream {} doesn't exist. With -c or --create it's creation can be forced."
+              .format(args.stream))
 
 
 main()

@@ -1,3 +1,6 @@
+from logging import getLogger
+from logging import NullHandler
+
 import python_liftbridge.api_pb2
 from python_liftbridge.base import BaseClient
 from python_liftbridge.errors import handle_rpc_errors
@@ -5,10 +8,14 @@ from python_liftbridge.errors import handle_rpc_errors_in_generator
 from python_liftbridge.message import Message  # noqa: F401
 from python_liftbridge.stream import Stream  # noqa: F401
 
+logger = getLogger(__name__)
+logger.addHandler(NullHandler())
+
 
 class Lift(BaseClient):
 
     def fetch_metadata(self):
+        # TODO
         return self._fetch_metadata(self._fetch_metadata_request())
 
     def subscribe(self, stream):
@@ -19,6 +26,7 @@ class Lift(BaseClient):
             is the end of the stream. It returns an ErrNoSuchStream if the given stream
             does not exist.
         """
+        logger.debug('Creating a new subscription to: %s' % stream)
         for message in self._subscribe(self._subscribe_request(stream)):
             yield message
 
@@ -29,12 +37,14 @@ class Lift(BaseClient):
             unique per subject. It returns ErrStreamExists if a stream with the given
             subject and name already exists.
         """
+        logger.debug('Creating a new stream: %s' % stream)
         return self._create_stream(self._create_stream_request(stream))
 
     def publish(self, message):
         """
             Publish publishes a new message to the NATS subject.
         """
+        logger.debug('Publishing a new message: %s' % message)
         return self._publish(
             self._create_publish_request(message._build_message()),
         )
@@ -42,25 +52,6 @@ class Lift(BaseClient):
     @handle_rpc_errors
     def _fetch_metadata(self, metadata_request):
         response = self.stub.FetchMetadata(metadata_request)
-        return response
-
-    def _fetch_metadata_request(self):
-        return python_liftbridge.api_pb2.FetchMetadataRequest()
-
-    @handle_rpc_errors
-    def _create_stream(self, stream_request):
-        response = self.stub.CreateStream(stream_request)
-        return response
-
-    # The only obligatory arguments are subject and name. Some kind of
-    # unpacking?
-    def _create_stream_request(self, stream):
-        response = python_liftbridge.api_pb2.CreateStreamRequest(
-            subject=stream.subject,
-            name=stream.name,
-            group=stream.group,
-            replicationFactor=stream.replication_factor,
-        )
         return response
 
     @handle_rpc_errors_in_generator
@@ -73,6 +64,28 @@ class Lift(BaseClient):
                 timestamp=message.timestamp,
                 key=message.key,
             )
+
+    @handle_rpc_errors
+    def _create_stream(self, stream_request):
+        response = self.stub.CreateStream(stream_request)
+        return response
+
+    @handle_rpc_errors
+    def _publish(self, publish_request):
+        response = self.stub.Publish(publish_request)
+        return response
+
+    def _fetch_metadata_request(self):
+        return python_liftbridge.api_pb2.FetchMetadataRequest()
+
+    def _create_stream_request(self, stream):
+        response = python_liftbridge.api_pb2.CreateStreamRequest(
+            subject=stream.subject,
+            name=stream.name,
+            group=stream.group,
+            replicationFactor=stream.replication_factor,
+        )
+        return response
 
     def _subscribe_request(self, stream):
         if stream.start_offset:
@@ -95,10 +108,6 @@ class Lift(BaseClient):
                 name=stream.name,
                 startPosition=stream.start_position,
             )
-
-    def _publish(self, publish_request):
-        response = self.stub.Publish(publish_request)
-        return response
 
     def _create_publish_request(self, message):
         return python_liftbridge.api_pb2.PublishRequest(message=message)
