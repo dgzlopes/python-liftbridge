@@ -34,3 +34,27 @@ super-clean:
 run-liftbridge:
 	docker pull dgzlopes/liftbridge-docker
 	docker run -d --name=liftbridge-main -p 4222:4222 -p 9292:9292 -p 8222:8222 -p 6222:6222 dgzlopes/liftbridge-docker
+
+.PHONY: pub
+pub:
+	python examples/lift-pub.py $(RUN_ARGS) -d
+
+.PHONY: sub
+sub:
+	python examples/lift-sub.py $(RUN_ARGS) -c -d
+
+# If the first argument is "pub"...
+ifeq (pub,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "pub"
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
+
+# If the first argument is "sub"...
+ifeq (sub,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "sub"
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif

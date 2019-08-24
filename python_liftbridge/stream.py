@@ -1,4 +1,6 @@
 from datetime import datetime
+from logging import getLogger
+from logging import NullHandler
 
 import python_liftbridge.api_pb2
 
@@ -18,6 +20,8 @@ class Stream():
             start_offset=None,
             start_timestamp=None,
     ):
+        self.logger = getLogger(__name__)
+        self.logger.addHandler(NullHandler())
         self.subject = subject
         self.name = name
         self.group = group
@@ -33,6 +37,7 @@ class Stream():
 
     def start_at_offset(self, offset):
         """Sets the desired start offset to begin consuming from in the stream."""
+        self.logger.debug('Sets desired start at offset: %s' % offset)
         self.start_position = python_liftbridge.api_pb2.StartPosition.Value(
             'OFFSET',
         )
@@ -42,10 +47,14 @@ class Stream():
 
     def start_at_time(self, date):
         """Sets the desired timestamp to begin consuming from in the stream."""
+        self.logger.debug(
+            'Sets desired start at date: %s' %
+            datetime.timestamp(date) * 1000000000,
+        )
+        self.start_timestamp = int(datetime.timestamp(date)) * 1000000000
         self.start_position = python_liftbridge.api_pb2.StartPosition.Value(
             'TIMESTAMP',
         )
-        self.start_timestamp = int(datetime.timestamp(date)) * 1000000000
         self.start_offset = None
         return self
 
@@ -54,6 +63,8 @@ class Stream():
             Sets the desired timestamp to begin consuming from in the stream
             using a time delta in the past.
         """
+        self.logger.debug('Sets desired start at timedelta: %s' %
+                          str(time_delta))
         self.start_position = python_liftbridge.api_pb2.StartPosition.Value(
             'TIMESTAMP',
         )
@@ -66,6 +77,7 @@ class Stream():
 
     def start_at_latest_received(self):
         """Sets the subscription start position to the last message received in the stream."""
+        self.logger.debug('Sets desired start at latest received')
         self.start_position = python_liftbridge.api_pb2.StartPosition.Value(
             'LATEST',
         )
@@ -73,7 +85,11 @@ class Stream():
 
     def start_at_earliest_received(self):
         """Sets the subscription start position to the earliest message received in the stream."""
+        self.logger.debug('Sets desired start at earliest received')
         self.start_position = python_liftbridge.api_pb2.StartPosition.Value(
             'EARLIEST',
         )
         return self
+
+    def __repr__(self):
+        return str(self.__dict__)

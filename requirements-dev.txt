@@ -1,4 +1,9 @@
+# Invocations for common project tasks
 tox>=3.8
 pre-commit
+# gRCP tools
 grpcio
 grpcio-tools
+# Release tools
+wheel
+twine

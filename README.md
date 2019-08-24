@@ -127,9 +127,9 @@ Some things on the backlog:
 - [x] Add method to close connection
 - [ ] Add async client
 - [ ] Add gRPC connection pool
-- [ ] Add logging (and remove all the random prints)
+- [x] Add logging (and remove all the random prints)
 - [ ] Add proper docstrings
-- [ ] Add version file
+- [x] Add version file
 - [ ] Add Contributing.md and explanation of the workflow (pyenv,tox,make,pre-commit...)
 - [ ] Improve fetch metadata
 - [ ] Improve error handling
