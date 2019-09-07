@@ -2,7 +2,7 @@
 build:
 	mkdir -p protos
 	# Points to the latest tested proto
-	wget https://raw.githubusercontent.com/liftbridge-io/liftbridge-grpc/ef48d3428ad6d37a794499b4a501be79909615ca/api.proto -O protos/api.proto
+	wget https://raw.githubusercontent.com/liftbridge-io/liftbridge-grpc/0877a0cacb7a721e2e19280cff126dc2ed51912d/api.proto -O protos/api.proto
 	python -m grpc_tools.protoc -I. --python_out=python_liftbridge/ --grpc_python_out=python_liftbridge/ protos/api.proto
 	mv python_liftbridge/protos/* python_liftbridge/.
 	rmdir python_liftbridge/protos
