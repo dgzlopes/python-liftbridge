@@ -123,7 +123,7 @@ Some things on the backlog:
 - [ ] Add CI (CircleCI or TravisCI)
 - [ ] Add tests
 - [ ] Add code coverage
-- [ ] Add TLS support for gRPC
+- [x] Add TLS support for gRPC
 - [ ] Add message headers support
 - [ ] Add message ACK support (scaffolding is already done)
 - [x] Add method to close connection
