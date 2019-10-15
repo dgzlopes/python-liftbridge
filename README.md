@@ -120,7 +120,7 @@ Since Liftbridge is an extension of [NATS](https://github.com/nats-io/gnatsd), a
 Some things on the backlog:
 
 - [ ] Add documentation (Sphynx)
-- [ ] Add CI (CircleCI or TravisCI)
+- [~] Add CI (CircleCI or TravisCI)
 - [ ] Add tests
 - [ ] Add code coverage
 - [x] Add TLS support for gRPC

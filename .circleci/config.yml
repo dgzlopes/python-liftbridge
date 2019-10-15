@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:201903-01
+    working_directory: ~/
+
+    steps:
+      - run: sleep 5 && docker pull dgzlopes/liftbridge-docker:latest
+      - run: docker run -d --name=liftbridge-main -p 4222:4222 -p 9292:9292 -p 8222:8222 -p 6222:6222 dgzlopes/liftbridge-docker:latest
+      - run: sleep 5 && nc -vz localhost 9292
