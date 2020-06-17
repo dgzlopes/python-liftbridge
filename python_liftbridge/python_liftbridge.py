@@ -72,7 +72,7 @@ class Lift(BaseClient):
 
     @handle_rpc_errors
     def _publish(self, publish_request):
-        response = self.stub.Publish(publish_request)
+        response = self.stub.PublishToSubject(publish_request)
         return response
 
     def _fetch_metadata_request(self):
@@ -107,4 +107,12 @@ class Lift(BaseClient):
             )
 
     def _create_publish_request(self, message):
-        return python_liftbridge.api_pb2.PublishRequest(message=message)
+        return python_liftbridge.api_pb2.PublishToSubjectRequest(
+            key=message.key, 
+            value=message.value,
+            subject=message.subject,
+            headers=message.headers,
+            ackInbox=message.ackInbox,
+            correlationId=message.correlationId,
+            ackPolicy=message.ackPolicy,
+        )
