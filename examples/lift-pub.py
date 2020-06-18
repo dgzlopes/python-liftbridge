@@ -41,7 +41,7 @@ def main():
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
     client = Lift(ip_address=args.server)
-    client.publish(Message(value=args.msg, subject=args.stream))
+    client.publish(Message(value=args.msg, stream=args.stream))
     print("Published [{}]: '{}'".format(args.stream, args.msg))
 
 
