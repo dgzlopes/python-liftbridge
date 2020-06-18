@@ -11,8 +11,8 @@ def parse_arguments():
         description='Liftbridge pub script.',
     )
     parser.add_argument(
-        'subject',
-        metavar='subject',
+        'stream',
+        metavar='stream',
     )
     parser.add_argument(
         'msg',
@@ -41,8 +41,8 @@ def main():
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
     client = Lift(ip_address=args.server)
-    client.publish(Message(value=args.msg, subject=args.subject))
-    print("Published [{}]: '{}'".format(args.subject, args.msg))
+    client.publish(Message(value=args.msg, subject=args.stream))
+    print("Published [{}]: '{}'".format(args.stream, args.msg))
 
 
 main()

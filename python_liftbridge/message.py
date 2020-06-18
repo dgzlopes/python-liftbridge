@@ -12,7 +12,8 @@ class Message():
     def __init__(
             self,
             value,
-            subject,
+            stream=None,
+            subject=None,
             key=None,
             ack_inbox=None,
             correlation_id=None,
@@ -22,7 +23,10 @@ class Message():
         self.logger = getLogger(__name__)
         self.logger.addHandler(NullHandler())
         self.key = key
+        if stream is None and subject is None:
+            raise ValueError('Either stream or subject should be provided')
         self.value = value
+        self.stream = stream
         self.subject = subject
         self.ack_inbox = ack_inbox
         self.correlation_id = correlation_id
@@ -51,8 +55,11 @@ class Message():
     def _build_message(self):
         message = self._create_message()
         message.value = str.encode(self.value)
-        message.subject = self.subject
         message.ackPolicy = self.ack_policy
+        if self.stream:
+            message.stream = self.stream
+        if self.subject:
+            message.subject = self.subject
         if self.key:
             message.key = str.encode(self.key)
         if self.ack_inbox:

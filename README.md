@@ -30,14 +30,14 @@ from python_liftbridge import Lift, Message, Stream, ErrStreamExists
 # Create a Liftbridge client.
 client = Lift(ip_address='localhost:9292', timeout=5)
 
-# Create a stream attached to the NATS subject "foo".
+# Create a stream attached to the NATS subject "foo" with name "foo-stream".
 try:
     client.create_stream(Stream(subject='foo', name='foo-stream'))
 except ErrStreamExists:
     print('This stream already exists!')
 
-# Publish a message to "foo".
-client.publish(Message(value='hello', subject='foo'))
+# Publish a message to stream with name "foo-stream".
+client.publish(Message(value='hello', stream='foo-stream'))
 
 # Subscribe to the stream starting from the beginning.
 for message in client.subscribe(
@@ -104,9 +104,15 @@ Keys are used by Liftbridge's log compaction. When enabled, Liftbridge streams w
 
 ```python
 # Publish a message with a key
-client.publish(Message(subject='foo', value='Hello', key='key'))
+client.publish(Message(stream='foo-stream', value='Hello', key='key'))
 ```
 
+Also, it is possible to publish a message to NATS subject.
+
+```python
+# Publish a message with a key to NATS subject
+client.publish_to_subject(Message(subject='foo', value='Hello', key='key'))
+```
 #### Publishing Directly with NATS
 
 Since Liftbridge is an extension of [NATS](https://github.com/nats-io/gnatsd), a [NATS client](https://github.com/nats-io/nats.py) can also be used to publish messages. This means existing NATS publishers do not need any changes for messages to be consumed in Liftbridge.
