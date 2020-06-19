@@ -2,7 +2,7 @@
 build:
 	mkdir -p protos
 	# Points to the latest tested proto
-	wget https://raw.githubusercontent.com/liftbridge-io/liftbridge-grpc/0877a0cacb7a721e2e19280cff126dc2ed51912d/api.proto -O protos/api.proto
+	wget https://raw.githubusercontent.com/liftbridge-io/liftbridge-api/v1.0.0/api.proto -O protos/api.proto
 	python -m grpc_tools.protoc -I. --python_out=python_liftbridge/ --grpc_python_out=python_liftbridge/ protos/api.proto
 	mv python_liftbridge/protos/* python_liftbridge/.
 	rmdir python_liftbridge/protos
@@ -32,8 +32,8 @@ super-clean:
 
 .PHONY: run-liftbridge
 run-liftbridge:
-	docker pull dgzlopes/liftbridge-docker
-	docker run -d --name=liftbridge-main -p 4222:4222 -p 9292:9292 -p 8222:8222 -p 6222:6222 dgzlopes/liftbridge-docker
+	docker pull liftbridge/standalone-dev:v1.1.0
+	docker run -d --name=liftbridge-main -p 4222:4222 -p 9292:9292 -p 8222:8222 -p 6222:6222 liftbridge/standalone-dev:v1.1.0
 
 .PHONY: pub
 pub:

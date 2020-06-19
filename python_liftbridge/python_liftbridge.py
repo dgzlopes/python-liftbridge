@@ -42,11 +42,20 @@ class Lift(BaseClient):
 
     def publish(self, message):
         """
-            Publish publishes a new message to the NATS subject.
+            Publish publishes a new message to the Liftbridge stream.
         """
-        logger.debug('Publishing a new message: %s' % message)
+        logger.debug('Publishing a new message to the Liftbridge stream: %s' % message)
         return self._publish(
             self._create_publish_request(message._build_message()),
+        )
+    
+    def publish_to_subject(self, message):
+        """
+            Publish publishes a new message to the NATS subject.
+        """
+        logger.debug('Publishing a new message to the NATS subject: %s' % message)
+        return self._publish_to_subject(
+            self._create_publish_to_subject_request(message._build_message()),
         )
 
     @handle_rpc_errors
@@ -73,6 +82,11 @@ class Lift(BaseClient):
     @handle_rpc_errors
     def _publish(self, publish_request):
         response = self.stub.Publish(publish_request)
+        return response
+    
+    @handle_rpc_errors
+    def _publish_to_subject(self, publish_to_subject_request):
+        response = self.stub.PublishToSubject(publish_to_subject_request)
         return response
 
     def _fetch_metadata_request(self):
@@ -107,4 +121,24 @@ class Lift(BaseClient):
             )
 
     def _create_publish_request(self, message):
-        return python_liftbridge.api_pb2.PublishRequest(message=message)
+        return python_liftbridge.api_pb2.PublishRequest(
+            key=message.key, 
+            value=message.value,
+            stream=message.stream,
+            headers=message.headers,
+            partition=message.partition,
+            ackInbox=message.ackInbox,
+            correlationId=message.correlationId,
+            ackPolicy=message.ackPolicy,
+        )
+    
+    def _create_publish_to_subject_request(self, message):
+        return python_liftbridge.api_pb2.PublishToSubjectRequest(
+            key=message.key, 
+            value=message.value,
+            subject=message.subject,
+            headers=message.headers,
+            ackInbox=message.ackInbox,
+            correlationId=message.correlationId,
+            ackPolicy=message.ackPolicy,
+        )

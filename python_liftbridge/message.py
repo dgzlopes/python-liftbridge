@@ -12,23 +12,29 @@ class Message():
     def __init__(
             self,
             value,
-            subject,
+            stream=None,
+            subject=None,
             key=None,
             ack_inbox=None,
             correlation_id=None,
             offset=None,
             timestamp=None,
+            partition=None,
     ):
         self.logger = getLogger(__name__)
         self.logger.addHandler(NullHandler())
         self.key = key
+        if stream is None and subject is None:
+            raise ValueError('Either stream or subject should be provided')
         self.value = value
+        self.stream = stream
         self.subject = subject
         self.ack_inbox = ack_inbox
         self.correlation_id = correlation_id
         self.ack_policy = python_liftbridge.api_pb2.AckPolicy.Value('NONE')
         self.offset = offset
         self.timestamp = timestamp
+        self.partition = partition
 
     def ack_policy_all(self):
         """Sets the ack policy to wait for all stream replicas to get the message."""
@@ -51,14 +57,19 @@ class Message():
     def _build_message(self):
         message = self._create_message()
         message.value = str.encode(self.value)
-        message.subject = self.subject
         message.ackPolicy = self.ack_policy
+        if self.stream:
+            message.stream = self.stream
+        if self.subject:
+            message.subject = self.subject
         if self.key:
             message.key = str.encode(self.key)
         if self.ack_inbox:
             message.ackInbox = self.ack_inbox
         if self.correlation_id:
             message.correlationId = self.correlation_id
+        if self.partition:
+            message.partition = self.partition
         return message
 
     def _create_message(self):
