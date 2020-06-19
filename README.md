@@ -30,7 +30,7 @@ from python_liftbridge import Lift, Message, Stream, ErrStreamExists
 # Create a Liftbridge client.
 client = Lift(ip_address='localhost:9292', timeout=5)
 
-# Create a stream attached to the NATS subject "foo" with the name "foo-stream".
+# Create a Liftbridge stream with name "foo-stream"
 try:
     client.create_stream(Stream(subject='foo', name='foo-stream'))
 except ErrStreamExists:
@@ -107,7 +107,7 @@ Keys are used by Liftbridge's log compaction. When enabled, Liftbridge streams w
 client.publish(Message(stream='foo-stream', value='Hello', key='key'))
 ```
 
-Also, it is possible to publish a message to the NATS subject.
+Also, it is possible to publish a message to the NATS subject (and, in turn, any streams that match the subject).
 
 ```python
 # Publish a message to the NATS subject
