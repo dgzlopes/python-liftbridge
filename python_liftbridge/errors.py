@@ -21,6 +21,12 @@ class ErrChannelClosed(Exception):
         super().__init__(message)
 
 
+class ErrDeadlineExceeded(Exception):
+    def __init__(self, message=None):
+        message = message or 'Timeout exceeded or Client cancelled'
+        super().__init__(message)
+
+
 def handle_rpc_errors(fnc):
     """Decorator to add more context to RPC errors"""
 
@@ -36,6 +42,8 @@ def handle_rpc_errors(fnc):
                 raise ErrStreamExists from None
             elif e.code() == grpc.StatusCode.CANCELLED:
                 raise ErrChannelClosed from None
+            elif e.code() == grpc.StatusCode.DEADLINE_EXCEEDED:
+                raise ErrDeadlineExceeded from None
             else:
                 print('Failed with {1}: {2}'.format(e.code(), e.details()))
     return wrapper
@@ -56,6 +64,8 @@ def handle_rpc_errors_in_generator(fnc):
                 raise ErrStreamExists from None
             elif e.code() == grpc.StatusCode.CANCELLED:
                 raise ErrChannelClosed from None
+            elif e.code() == grpc.StatusCode.DEADLINE_EXCEEDED:
+                raise ErrDeadlineExceeded from None
             else:
                 print('Failed with {1}: {2}'.format(e.code(), e.details()))
     return wrapper
