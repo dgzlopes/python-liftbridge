@@ -141,20 +141,20 @@ class Lift(BaseClient):
                 stream=stream.name,
                 startPosition=stream.start_position,
                 startOffset=stream.start_offset,
-                partition=stream.partitions
+                partition=stream.subscribe_to_partition
             )
         elif stream.start_timestamp:
             return python_liftbridge.api_pb2.SubscribeRequest(
                 stream=stream.name,
                 startPosition=stream.start_position,
                 startTimestamp=stream.start_timestamp,
-                partition=stream.partitions
+                partition=stream.subscribe_to_partition
             )
         else:
             return python_liftbridge.api_pb2.SubscribeRequest(
                 stream=stream.name,
                 startPosition=stream.start_position,
-                partition=stream.partitions
+                partition=stream.subscribe_to_partition
             )
 
     def _create_publish_request(self, message):

@@ -15,7 +15,8 @@ class Stream():
             subject,
             name,
             group=None,
-            partitions=0,
+            partitions=1,
+            subscribe_to_partition=0,
             replication_factor=1,
             max_replication=False,
             start_offset=None,
@@ -27,6 +28,7 @@ class Stream():
         self.name = name
         self.group = group
         self.partitions = partitions
+        self.subscribe_to_partition = subscribe_to_partition
         if max_replication:
             self.replication_factor = -1
         else:
