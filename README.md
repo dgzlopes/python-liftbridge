@@ -32,7 +32,8 @@ client = Lift(ip_address='localhost:9292', timeout=5)
 
 # Create a Liftbridge stream with name "foo-stream"
 try:
-    client.create_stream(Stream(subject='foo', name='foo-stream'))
+    # create a stream with 5 partitions. default value is 1
+    client.create_stream(Stream(subject='foo', name='foo-stream', partitions=5))
 except ErrStreamExists:
     print('This stream already exists!')
 
@@ -44,6 +45,7 @@ for message in client.subscribe(
     Stream(
         subject='foo',
         name='foo-stream',
+        subscribe_to_partition=0  # subscribe to specific partition of stream. default value is 0
     ).start_at_earliest_received(),
 ):
     print("Received: '{}'".format(message.value))
@@ -54,7 +56,7 @@ for message in client.subscribe(
 
 [Streams](https://github.com/liftbridge-io/liftbridge/blob/master/documentation/concepts.md#stream) are a durable message log attached to a NATS subject. They record messages published to the subject for consumption.
 
-Streams have a few key properties: a subject, which is the corresponding NATS subject, a name, which is a human-readable identifier for the stream, and a replication factor, which is the number of nodes the stream should be replicated to for redundancy.  Optionally, there is a group which is the name of a load-balance group for the stream to join. When there are multiple streams in the same group, messages will be balanced among them.
+Streams have a few key properties: a subject, which is the corresponding NATS subject, a name, which is a human-readable identifier for the stream, and a replication factor, which is the number of nodes the stream should be replicated to for redundancy.  Optionally, there is a group which is the name of a load-balance group for the stream to join. Also you can specify partitions count. When there are multiple streams in the same group, messages will be balanced among them.
 
 ```python
 """
@@ -62,7 +64,7 @@ Streams have a few key properties: a subject, which is the corresponding NATS su
     all the brokers in the cluster. ErrStreamExists is returned if a stream with
     the given name already exists for the subject.
 """
-client.create_stream(Stream(subject='foo.*', name='my-stream', max_replication=True))
+client.create_stream(Stream(subject='foo.*', name='my-stream', max_replication=True, partitions=3))
 ```
 
 ### Subscription Start/Replay Options
@@ -94,6 +96,10 @@ client.subscribe(
 client.subscribe(
     Stream(subject='foo', name='foo-stream').start_at_time_delta(timedelta(days=1))
 )
+# Subscribe specific partition
+client.subscribe(
+    Stream(subject='foo', name='foo-stream', subscribe_to_partition=2).start_at_latest_received()
+)
 ```
 
 ### Publishing
@@ -112,6 +118,13 @@ Also, it is possible to publish a message to the NATS subject (and, in turn, any
 ```python
 # Publish a message to the NATS subject
 client.publish_to_subject(Message(subject='foo', value='Hello foo'))
+```
+
+And you can publish message to specific stream partition.
+
+```python
+# Publish a message to the NATS subject
+client.publish_to_subject(Message(subject='foo', value='Hello foo', partition=3))
 ```
 #### Publishing Directly with NATS
 
