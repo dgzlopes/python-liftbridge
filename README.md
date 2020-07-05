@@ -98,7 +98,7 @@ client.subscribe(
 )
 # Subscribe specific partition
 client.subscribe(
-    Stream(subject='foo', name='foo-stream', partition=2).start_at_latest_received()
+    Stream(subject='foo', name='foo-stream', subscribe_to_partition=2).start_at_latest_received()
 )
 ```
 
